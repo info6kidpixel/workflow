@@ -1,0 +1,42 @@
+<div id="customSequenceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-list-check"></i> Configurer la Séquence</h2>
+            <span class="close-button">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="sequence-presets">
+                <h3><i class="fas fa-star"></i> Séquences Prédéfinies</h3>
+                <div class="preset-buttons">
+                    <button class="preset-button" data-preset="workflow_complet" title="Exécute toutes les étapes principales dans l'ordre">
+                        <i class="fas fa-play-circle"></i>
+                        Workflow Complet (0-4)
+                    </button>
+                    <button class="preset-button" data-preset="analyse_audio_video" title="Découpe les scènes et analyse l'audio">
+                        <i class="fas fa-play-circle"></i>
+                        Analyse Audio/Vidéo
+                    </button>
+                    <button class="preset-button" data-preset="preparation_tracking" title="Décompresse les fichiers et lance le tracking">
+                        <i class="fas fa-play-circle"></i>
+                        Préparation + Tracking
+                    </button>
+                </div>
+            </div>
+
+            <div class="sequence-separator">
+                <span>ou créez une séquence personnalisée</span>
+            </div>
+
+            <div id="stepsSelectionContainer" class="sequence-steps-container">
+                <!-- Les étapes seront injectées ici dynamiquement par le sequenceManager.js -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="cancelCustomSequenceBtn" class="action-button ripple-effect" style="background-color: var(--secondary);">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <button id="startCustomSequenceBtn" class="action-button ripple-effect" style="background-color: var(--primary);">
+                <i class="fas fa-play"></i> Lancer la Séquence            </button>
+        </div>
+    </div>
+</div>

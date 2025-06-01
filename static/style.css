@@ -1,0 +1,490 @@
+/* Variables de couleur du thème dark */
+:root {
+    --dark-menu-bg-dark: #060818;
+    --dark-menu-bg-light: #0e1726;
+    --dark-menu-color-light: #e0e6ed;
+    --dark-menu-color-secondary: #888ea8;
+    --dark-menu-border-color: #1b2e4b;
+    --dark-menu-active-bg: #1b2e4b;
+    --dark-menu-active-color: #4361ee;
+    --dark-menu-shadow: 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12), 0 3px 5px -1px rgba(0,0,0,.2);
+    
+    /* Variables pour le switch et les états */
+    --switch-on-color: #4361ee;
+    --switch-off-color: #515365;
+    --gpu-panel-bg: #1b2e4b;
+    --gpu-status-bg: #0e1726;
+    --sequence-item-height: 40px;
+}
+
+/* Style général */
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--dark-menu-bg-dark);
+    color: var(--dark-menu-color-light);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Titre principal */
+.main-title {
+    font-size: 2rem;
+    color: var(--dark-menu-color-light);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--dark-menu-border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-title i {
+    color: var(--dark-menu-active-color);
+}
+
+/* Contrôles principaux */
+.header-controls {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: var(--dark-menu-bg-light);
+    border-radius: 8px;
+    border: 1px solid var(--dark-menu-border-color);
+    align-items: center;
+}
+
+/* Section des téléchargements */
+.local-downloads-section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: var(--dark-menu-bg-light);
+    border-radius: 8px;
+    box-shadow: var(--dark-menu-shadow);
+    border: 1px solid var(--dark-menu-border-color);
+}
+
+.local-downloads-section h2 {
+    margin: 0 0 15px 0;
+    color: var(--dark-menu-color-light);
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.local-downloads-section h2 i {
+    color: var(--dark-menu-active-color);
+}
+
+#localDownloadsContainer {
+    display: grid;
+    gap: 10px;
+}
+
+.download-item {
+    padding: 15px;
+    background-color: rgba(67, 97, 238, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(67, 97, 238, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Panneau GPU */
+.gpu-info-panel {
+    background-color: var(--gpu-panel-bg);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid var(--dark-menu-border-color);
+    box-shadow: var(--dark-menu-shadow);
+}
+
+.gpu-info-panel h4 {
+    color: var(--dark-menu-color-light);
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gpu-info-panel h4 i {
+    color: var(--dark-menu-active-color);
+}
+
+.gpu-status-list {
+    display: grid;
+    gap: 15px;
+}
+
+.gpu-status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: rgba(67, 97, 238, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(67, 97, 238, 0.2);
+}
+
+/* Switch Mode Auto */
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    background-color: var(--dark-menu-active-bg);
+    transition: all 0.3s ease;
+}
+
+.switch-container.active {
+    background-color: rgba(67, 97, 238, 0.15);
+    border: 1px solid rgba(67, 97, 238, 0.3);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--switch-off-color);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--switch-on-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+.switch-label {
+    color: var(--dark-menu-color-light);
+    font-weight: 500;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Boutons d'action */
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--dark-menu-active-color);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(67, 97, 238, 0.3);
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(67, 97, 238, 0.4);
+}
+
+.action-button:disabled {
+    background-color: var(--dark-menu-color-secondary);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Section des étapes */
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.step {
+    background-color: var(--dark-menu-bg-light);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--dark-menu-shadow);
+    border: 1px solid var(--dark-menu-border-color);
+    transition: all 0.3s ease;
+}
+
+.step:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--dark-menu-border-color);
+}
+
+.step-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--dark-menu-color-light);
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* États des étapes */
+.status-idle {
+    border-left: 4px solid var(--dark-menu-color-secondary);
+}
+
+.status-running {
+    border-left: 4px solid #4361ee;
+    background: linear-gradient(45deg, var(--dark-menu-bg-light), rgba(67, 97, 238, 0.1));
+}
+
+.status-completed {
+    border-left: 4px solid #00ab55;
+}
+
+.status-failed {
+    border-left: 4px solid #e7515a;
+}
+
+.status-pending-gpu {
+    border-left: 4px solid #e2a03f;
+    background: linear-gradient(45deg, var(--dark-menu-bg-light), rgba(226, 160, 63, 0.1));
+}
+
+/* Barre de progression */
+.progress-container {
+    height: 8px;
+    background-color: rgba(67, 97, 238, 0.1);
+    border-radius: 4px;
+    margin: 15px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(45deg, #4361ee, #805dca);
+    width: 0;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-bar.progress-animated {
+    background: linear-gradient(45deg, #4361ee, #805dca, #4361ee);
+    background-size: 200% 200%;
+    animation: gradientMove 2s linear infinite;
+}
+
+.progress-text {
+    margin-top: 8px;
+    display: block;
+    font-size: 0.9rem;
+    color: var(--dark-menu-color-secondary);
+}
+
+/* Boutons de contrôle */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.button-container button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+.run-button {
+    background-color: #00ab55;
+    color: white;
+}
+
+.run-button:hover {
+    background-color: #008f47;
+    transform: translateY(-2px);
+}
+
+.cancel-button {
+    background-color: #e7515a;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #d23f47;
+    transform: translateY(-2px);
+}
+
+.show-log-button, .show-specific-logs-button {
+    background-color: var(--dark-menu-active-bg);
+    color: var(--dark-menu-color-light);
+}
+
+.show-log-button:hover, .show-specific-logs-button:hover {
+    background-color: var(--dark-menu-active-color);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: var(--dark-menu-color-secondary) !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Badges et statuts */
+.gpu-intensive-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+    background: linear-gradient(45deg, #4361ee, #805dca);
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.status-text {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background-color: var(--dark-menu-active-bg);
+    color: var(--dark-menu-color-secondary);
+}
+
+/* Animations */
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-menu-bg-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dark-menu-active-bg);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-menu-active-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-controls {
+        flex-direction: column;
+    }
+    
+    .steps-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-container {
+        flex-wrap: wrap;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px auto;
+    }
+}
+
+/* Tooltips */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+[data-tooltip]:hover:before {
+    opacity: 1;
+    visibility: visible;
+}

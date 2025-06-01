@@ -1,0 +1,20 @@
+<div id="logModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="logModalTitle"><i class="fas fa-file-alt"></i> Logs de l'étape</h2>
+            <span class="close-button" onclick="this.closest('.modal').style.display='none'">×</span>
+        </div>
+        <div class="modal-body">
+            <div id="logModalContent" class="log-content">
+                <!-- Le contenu des logs sera injecté ici par JavaScript -->
+                <p>Aucun log à afficher pour le moment.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="action-button ripple-effect" style="background-color: var(--secondary);"
+                onclick="this.closest('.modal').style.display='none'">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+</div>

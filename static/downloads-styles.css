@@ -1,0 +1,103 @@
+/* Styles pour la section des téléchargements */
+.download-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--dark-menu-active-bg);
+    border-radius: 8px;
+    border: 1px solid var(--dark-menu-border-color);
+    transition: all 0.3s ease;
+}
+
+.download-item:hover {
+    transform: translateX(5px);
+    background-color: var(--dark-menu-bg-light);
+}
+
+.download-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.download-filename {
+    color: var(--dark-menu-color-light);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.download-filename i {
+    color: var(--dark-menu-active-color);
+}
+
+.download-status {
+    font-size: 0.9rem;
+    color: var(--dark-menu-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* États de téléchargement */
+.download-item.completed {
+    border-left: 4px solid #00ab55;
+}
+
+.download-item.completed .download-status {
+    color: #00ab55;
+}
+
+.download-item.failed {
+    border-left: 4px solid #e7515a;
+}
+
+.download-item.failed .download-status {
+    color: #e7515a;
+}
+
+.download-item.downloading {
+    border-left: 4px solid #4361ee;
+}
+
+.download-item.downloading .download-status {
+    color: #4361ee;
+}
+
+/* Barre de progression du téléchargement */
+.download-progress {
+    height: 4px;
+    background-color: rgba(67, 97, 238, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 5px;
+    width: 200px;
+}
+
+.download-progress-bar {
+    height: 100%;
+    background: linear-gradient(45deg, #4361ee, #805dca);
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+/* Animation pour téléchargement en cours */
+@keyframes downloadPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.download-item.downloading .download-progress-bar {
+    animation: downloadPulse 2s infinite;
+}
+
+/* Timestamp */
+.download-timestamp {
+    font-size: 0.85rem;
+    color: var(--dark-menu-color-secondary);
+    margin-left: auto;
+    padding-left: 15px;
+}

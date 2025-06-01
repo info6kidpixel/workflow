@@ -1,0 +1,21 @@
+<div id="specificLogsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="specificLogsModalTitle"><i class="fas fa-file-invoice"></i> Logs Spécifiques</h2>
+            <span class="close-button" onclick="this.closest('.modal').style.display='none'">×</span>
+        </div>
+        <div class="modal-body">
+            <p id="specificLogPath" style="font-size: 0.8rem; color: var(--dark-menu-color-secondary); margin-bottom: 10px;"></p>
+            <div id="specificLogsModalContentContainer" class="specific-logs-container">
+                <!-- Le contenu des logs spécifiques sera injecté ici par JavaScript -->
+                <p>Aucun log spécifique à afficher ou en cours de chargement.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="action-button ripple-effect" style="background-color: var(--secondary);"
+                onclick="this.closest('.modal').style.display='none'">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+// _components.scss
+// Styles pour les composants réutilisables
+@import 'variables';
+
+.button {
+  background: $primary-color;
+  color: #fff;
+  border: none;
+  border-radius: $border-radius;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: darken($primary-color, 10%);
+  }
+}
+
+.card {
+  background: #fff;
+  border-radius: $border-radius;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}

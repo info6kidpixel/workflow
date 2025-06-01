@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lanceur de Workflow</title>
+    
+    <!-- Polices -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    
+    <!-- Icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='controls-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='gpu-panel-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sequence-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='downloads-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='active-log-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='modal-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='custom-sequence-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='notification-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sequence-feedback.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/specific-logs.css') }}">
+    
+    <!-- JavaScript -->
+    <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Titre principal -->
+        <h1 class="main-title">
+            <i class="fas fa-microchip"></i> Lanceur de Workflow
+        </h1>
+
+        <!-- Contrôles principaux -->
+        <div class="header-controls">
+            <button id="runSequenceBtn" class="action-button">
+                <i class="fas fa-play"></i> Lancer Workflow (0-4)
+            </button>
+            <div class="switch-container active">
+                <label class="switch">
+                    <input type="checkbox" id="toggleAutoMode" checked>
+                    <span class="slider"></span>
+                </label>
+                <span class="switch-label">
+                    <i class="fas fa-robot"></i> Mode Auto
+                </span>
+            </div>
+            <button id="customSequenceBtn" class="action-button" onclick="document.getElementById('customSequenceModal').style.display='block'">
+                <i class="fas fa-list-check"></i> Séquence Personnalisée
+            </button>
+        </div>
+
+        <!-- Section des téléchargements locaux -->
+        <div class="local-downloads-section">
+            <h2><i class="fas fa-download"></i> Téléchargements Locaux</h2>
+            <div id="localDownloadsContainer"></div>
+        </div>
+
+        <!-- Panneau d'information GPU -->
+        <div class="gpu-info-panel">
+            <h4>
+                <i class="fas fa-microchip"></i>
+                État du GPU
+            </h4>
+            <div class="gpu-status-list">
+                <div class="gpu-status-item available">
+                    <span>
+                        <i class="fas fa-circle-info"></i>
+                        Statut actuel:
+                    </span>
+                    <span id="current-gpu-status">Disponible</span>
+                </div>
+                <div class="gpu-status-item">
+                    <span>
+                        <i class="fas fa-tasks"></i>
+                        Utilisé par:
+                    </span>
+                    <span id="current-gpu-user">Aucune tâche</span>
+                </div>
+                <div class="gpu-status-item">
+                    <span>
+                        <i class="fas fa-clock"></i>
+                        En attente:
+                    </span>
+                    <span id="gpu-waiting-tasks">0 tâche(s)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section des étapes -->
+        <div class="steps-container">
+            {% for step_key, step in steps_config.items() %}
+            <div class="step status-idle" data-step-key="{{ step_key }}">
+                <div class="step-header">
+                    <h3>
+                        {% if step.gpu_intensive %}
+                        <i class="fas fa-microchip"></i>
+                        {% else %}
+                        <i class="fas fa-cog"></i>
+                        {% endif %}
+                        {{ step.display_name }}
+                    </h3>
+                    <span class="status-text">En attente</span>
+                    {% if step.gpu_intensive %}
+                    <div class="gpu-status-badge">
+                        <span class="gpu-label">
+                            <i class="fas fa-microchip"></i> GPU
+                        </span>
+                        <span class="separator"></span>
+                        <span class="gpu-state">
+                            <i class="fas fa-check-circle"></i> disponible
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="step-content">
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <span class="progress-text"></span>
+                    <div class="button-container">
+                        <button class="run-button" data-tooltip="Lancer cette étape">
+                            <i class="fas fa-play"></i> Lancer
+                        </button>
+                        <button class="cancel-button" disabled data-tooltip="Annuler l'exécution">
+                            <i class="fas fa-stop"></i> Annuler
+                        </button>
+                        <button class="show-log-button" data-tooltip="Voir les logs">
+                            <i class="fas fa-file-lines"></i> Logs
+                        </button>
+                        {% if step.specific_logs %}
+                        <button class="show-specific-logs-button" data-tooltip="Logs spécifiques">
+                            <i class="fas fa-list-ul"></i> Logs Spécifiques
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div class="log-panel" style="display: none;">
+                        <div class="log-content"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Modales centralisées -->
+    {% include 'custom_sequence_modal.html' %}
+    {% include 'log_modal.html' %}
+    {% include 'specific_logs_modal.html' %}
+    {% include 'sequence_summary_modal.html' %}
+
+</body>
+</html>

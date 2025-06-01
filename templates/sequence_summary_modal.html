@@ -1,0 +1,44 @@
+<div id="sequenceSummaryModal" class="modal sequence-summary-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="sequenceSummaryTitle">
+                <i class="fas fa-flag-checkered"></i>
+                <span>Résumé de la Séquence</span>
+            </h2>
+            <button class="close-button">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="sequence-info">
+                <p id="sequenceTimestamp">
+                    <i class="far fa-clock"></i>
+                    <span>Terminée le: --</span>
+                </p>
+                <p id="sequenceDuration">
+                    <i class="fas fa-stopwatch"></i>
+                    <span>Durée: --</span>
+                </p>
+            </div>
+            <div id="sequenceSummaryContent" class="sequence-stats">
+                <!-- Les statistiques de la séquence seront injectées ici -->
+            </div>
+            <div id="stepsSummary" class="steps-summary">
+                <!-- Le résumé des étapes sera injecté ici -->
+            </div>
+            <div id="sequenceError" class="error-message" style="display: none;">
+                <!-- Les messages d'erreur seront injectés ici -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="action-button view-logs ripple-effect">
+                <i class="fas fa-file-alt"></i>
+                Voir les Logs
+            </button>
+            <button class="action-button close ripple-effect">
+                <i class="fas fa-check"></i>
+                Fermer
+            </button>
+        </div>
+    </div>
+</div>

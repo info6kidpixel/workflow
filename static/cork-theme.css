@@ -1,0 +1,140 @@
+/* Cork Modern Dark Theme Variables */
+:root {
+    --bs-body-bg: #060818;
+    --bs-body-bg-rgb: 6, 8, 24;
+    --bs-body-color: #e0e6ed;
+    
+    --primary: #4361ee;
+    --info: #2196f3;
+    --success: #00ab55;
+    --warning: #e2a03f;
+    --danger: #e7515a;
+    --secondary: #805dca;
+    --dark: #3b3f5c;
+    --light: #e0e6ed;
+
+    /* Card & Modal Backgrounds */
+    --card-bg: #0e1726;
+    --card-border-color: #1b2e4b;
+    --card-box-shadow: 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12), 0 3px 5px -1px rgba(0,0,0,.2);
+
+    /* Buttons & Active Elements */
+    --btn-default-bg: #1b2e4b;
+    --btn-default-color: #e0e6ed;
+    --btn-primary-bg: var(--primary);
+    --btn-primary-color: #fff;
+    --btn-ripple-color: rgba(255, 255, 255, 0.2);
+
+    /* Specific component variables */
+    --dark-menu-bg-dark: #060818;
+    --dark-menu-bg-light: #0e1726;
+    --dark-menu-color-light: #e0e6ed;
+    --dark-menu-color-secondary: #888ea8;
+    --dark-menu-border-color: #1b2e4b;
+    --dark-menu-active-bg: #1b2e4b;
+    --dark-menu-active-color: #4361ee;
+    --dark-menu-shadow: 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12), 0 3px 5px -1px rgba(0,0,0,.2);
+    
+    --switch-on-color: var(--primary);
+    --switch-off-color: #515365;
+    --gpu-panel-bg: var(--card-bg);
+    --gpu-status-bg: var(--dark-menu-bg-dark);
+    --sequence-item-height: 48px;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 100%; 
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Responsive container adjustments */
+@media (min-width: 576px) {
+    .container { max-width: 540px; }
+}
+@media (min-width: 768px) {
+    .container { max-width: 720px; }
+}
+@media (min-width: 992px) {
+    .container { max-width: 960px; }
+}
+@media (min-width: 1200px) {
+    .container { max-width: 1140px; }
+}
+@media (min-width: 1400px) {
+    .container, .container-xxl { max-width: 1320px; }
+    body.layout-boxed .main-container .main-content {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+}
+
+/* Ripple Effect for Buttons */
+.ripple-effect {
+    position: relative;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0);
+}
+
+.ripple-effect::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, var(--btn-ripple-color) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform .3s, opacity 1s;
+}
+
+.ripple-effect:active::after {
+    transform: scale(0, 0);
+    opacity: .3;
+    transition: 0s;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-menu-bg-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dark-menu-active-bg);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-menu-active-color);
+}
+
+/* Basic link styling */
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+a:hover {
+    color: #2e48d5;
+    text-decoration: underline;
+}

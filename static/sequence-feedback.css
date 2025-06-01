@@ -1,0 +1,378 @@
+/* Styles pour le retour visuel des séquences et la modale de résumé */
+
+/* Style pour l'étape active */
+.sequence-active-step {
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Animation de progression */
+.sequence-progress-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--primary) 100%);
+    background-size: 200% 100%;
+    animation: progress-animation 2s linear infinite;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+@keyframes progress-animation {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+/* Style pour la modale de résumé */
+.sequence-summary-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sequence-summary-modal.show {
+    opacity: 1;
+}
+
+.sequence-summary-modal .modal-content {
+    background-color: var(--dark-body-background);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.sequence-summary-modal.show .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.sequence-summary-modal .modal-header {
+    background-color: var(--dark-surface);
+    border-bottom: 1px solid var(--dark-border-subtle);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px 8px 0 0;
+}
+
+.sequence-summary-modal .modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--dark-header-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sequence-summary-modal .modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.sequence-summary-modal .sequence-info {
+    background-color: var(--dark-highlight-background);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.sequence-summary-modal .sequence-info p {
+    margin: 0.5rem 0;
+    color: var(--dark-text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sequence-summary-modal .steps-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sequence-summary-modal .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--dark-surface);
+    border-radius: 6px;
+    border: 1px solid var(--dark-border-subtle);
+}
+
+.sequence-summary-modal .step-item i {
+    font-size: 1.2rem;
+    margin-top: 0.2rem;
+}
+
+.sequence-summary-modal .step-info {
+    flex: 1;
+}
+
+.sequence-summary-modal .step-error {
+    margin-top: 0.5rem;
+    color: var(--danger);
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    background-color: var(--danger-transparent);
+    border-radius: 4px;
+}
+
+.sequence-summary-modal .error-message {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--danger-transparent);
+    border-radius: 6px;
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sequence-summary-modal .modal-footer {
+    border-top: 1px solid var(--dark-border-subtle);
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Button styles */
+.sequence-summary-modal .action-button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.sequence-summary-modal .action-button:hover {
+    transform: translateY(-2px);
+}
+
+.sequence-summary-modal .action-button.close {
+    background-color: var(--dark-button-secondary-background);
+    color: var(--dark-button-secondary-color);
+}
+
+.sequence-summary-modal .action-button.view-logs {
+    background-color: var(--primary);
+    color: white;
+}
+
+.sequence-summary-modal .close-button {
+    background: none;
+    border: none;
+    color: var(--dark-text-secondary);
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.sequence-summary-modal .close-button:hover {
+    color: var(--dark-text-primary);
+}
+
+/* Animation d'apparition pour la modale */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.sequence-summary-modal.show {
+    display: block;
+    animation: modalFadeIn 0.3s ease forwards;
+}
+
+/* Animation pour les steps */
+@keyframes stepAppear {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.step-status {
+    animation: stepAppear 0.3s ease forwards;
+    animation-delay: calc(var(--step-index, 0) * 0.1s);
+    opacity: 0;
+}
+.sequence-active-step {
+    position: relative;
+    animation: pulse-border 2s infinite;
+}
+
+.sequence-active-step::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--primary);
+    animation: pulse-highlight 2s infinite;
+}
+
+.sequence-progress-container {
+    margin: 1rem 0;
+    background: var(--dark);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+}
+
+.sequence-progress-bar {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.elapsed-time {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-left: 1rem;
+}
+
+/* Log styling */
+.log-info {
+    color: var(--info);
+}
+
+.log-warning {
+    color: var(--warning);
+}
+
+.log-error {
+    color: var(--danger);
+}
+
+.log-success {
+    color: var(--success);
+}
+
+.log-timestamp {
+    color: var(--text-muted);
+}
+
+/* Animations */
+@keyframes pulse-border {
+    0% {
+        border-color: var(--primary-light);
+    }
+    50% {
+        border-color: var(--primary);
+    }
+    100% {
+        border-color: var(--primary-light);
+    }
+}
+
+@keyframes pulse-highlight {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+/* État des étapes */
+.step[data-status="running"] {
+    background: var(--dark-highlight);
+}
+
+.step[data-status="completed"] {
+    border-left: 4px solid var(--success);
+}
+
+.step[data-status="failed"] {
+    border-left: 4px solid var(--danger);
+}
+
+/* Transitions fluides */
+.step {
+    transition: all 0.3s ease;
+}
+
+.step:not(.sequence-active-step) {
+    opacity: 0.8;
+}
+
+.sequence-active-step {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+/* Texte d'état dynamique */
+.status-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.step[data-status] .status-text {
+    opacity: 1;
+}
+
+.step[data-status="running"] .status-text {
+    color: var(--primary);
+}
+
+.step[data-status="completed"] .status-text {
+    color: var(--success);
+}
+
+.step[data-status="failed"] .status-text {
+    color: var(--danger);
+}
+
+/* Indicateur de progression */
+.progress-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s linear;
+}
