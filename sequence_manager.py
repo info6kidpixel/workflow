@@ -46,10 +46,13 @@ class SequenceManager:
     def execute_sequence_worker(self, steps, sequence_type="Manual"):
         """
         Exécute une séquence d'étapes dans un thread séparé
-    
+
         Args:
             steps (list): Liste des clés d'étapes à exécuter
             sequence_type (str): Type de séquence ("Manual" ou "AutoMode")
+        
+        Returns:
+            bool: True si la séquence s'est terminée avec succès, False sinon
         """
         with self.sequence_lock:
             self.is_currently_running_sequence = True
@@ -63,7 +66,7 @@ class SequenceManager:
                     if self.stop_requested:
                         self.logger.info(f"Séquence {sequence_type} arrêtée sur demande")
                         self.update_last_sequence_outcome("canceled", f"Séquence arrêtée manuellement à l'étape {step_key}")
-                        break
+                        return False  # Retourne False en cas d'annulation
                     
                     self.logger.info(f"Exécution de l'étape {step_key}")
                     
@@ -97,21 +100,27 @@ class SequenceManager:
                         self.process_manager.cancel_step(step_key)
                         self.logger.info(f"Séquence {sequence_type} arrêtée sur demande")
                         self.update_last_sequence_outcome("canceled", f"Séquence arrêtée manuellement à l'étape {step_key}")
-                        break
+                        return False  # Retourne False en cas d'annulation
                     
                     if info['status'] == 'failed':
                         self.logger.error(f"Étape {step_key} échouée, arrêt de la séquence")
                         self.update_last_sequence_outcome("failed", f"Échec à l'étape {step_key}")
-                        break
+                        return False  # Retourne False en cas d'échec
                 
                 # Si toutes les étapes sont terminées avec succès
                 if not self.stop_requested and all(self.process_manager.process_info[step]['status'] == 'completed' for step in steps):
                     self.logger.info(f"Séquence {sequence_type} terminée avec succès")
                     self.update_last_sequence_outcome("success", "Toutes les étapes terminées avec succès")
+                    return True  # Retourne True en cas de succès
+                else:
+                    # Si on arrive ici, c'est qu'il y a eu un problème non géré
+                    self.update_last_sequence_outcome("failed", "Fin de séquence avec statut incohérent")
+                    return False  # Retourne False par défaut
             
             except Exception as e:
                 self.logger.error(f"Erreur lors de l'exécution de la séquence {sequence_type}: {e}", exc_info=True)
                 self.update_last_sequence_outcome("failed", f"Erreur inattendue: {str(e)}")
+                return False  # Retourne False en cas d'exception
             
             finally:
                 # Réinitialiser l'état de la séquence
