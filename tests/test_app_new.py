@@ -1,6 +1,6 @@
 # Basic Flask app tests for app_new.py
 import pytest
-from app_new import APP_FLASK
+from app_new import app as APP_FLASK # Option A: importer 'app' et le renommer en APP_FLASK pour minimiser les changements dans le reste du test
 
 @pytest.fixture
 def client():
