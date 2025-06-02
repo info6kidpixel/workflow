@@ -99,6 +99,7 @@ class GPUManager:
                         self._gpu_waiting_queue.append(step_key)
                         self._logger.info(f"GPU: '{step_key}' ajouté à la file d'attente GPU (position {len(self._gpu_waiting_queue)})")
 
+                # Si on arrive ici, c'est qu'on attend le GPU
                 # Vérifier le timeout si on attend
                 if wait_if_busy:
                     wait_duration = time.time() - wait_start_time
@@ -116,14 +117,12 @@ class GPUManager:
                     
                     self._logger.debug(f"GPU: '{step_key}' attend le GPU (occupé par '{self._gpu_in_use_by}', {wait_duration:.1f}s)...")
                     
-                    # Attente interruptible
-                    if self._app_stop_event.wait(5):  # Attend 5s OU que l'event soit setté
+                    # Attente interruptible - réduire le temps d'attente pour vérifier le timeout plus fréquemment
+                    if self._app_stop_event.wait(0.1):  # Attendre 0.1s au lieu de 5s pour vérifier le timeout plus souvent
                         with self._gpu_lock:
                             if step_key in self._gpu_waiting_queue:
                                 self._gpu_waiting_queue.remove(step_key)
                         raise GpuUnavailableError(f"Arrêt de l'application pendant l'attente du GPU pour {step_key}")
-                else:
-                    break
 
             yield  # Exécution du bloc with
 
@@ -151,9 +150,7 @@ class GPUManager:
                             self._gpu_waiting_queue.remove(step_key)
                         
                         # Lancer la prochaine tâche en attente s'il y en a
-                        # La logique est déléguée à l'appelant via la callback
-                        # pour éviter les dépendances cycliques
-                        # threading.Thread(target=self._launch_pending_task_callback, daemon=True).start()
+                        threading.Thread(target=self.launch_pending_task, daemon=True).start()
                     else:
                         self._logger.warning(f"GPU: Incohérence - '{step_key}' essaie de libérer le GPU possédé par '{self._gpu_in_use_by}'")
 
@@ -222,16 +219,43 @@ class GPUManager:
         self._launch_pending_task_callback = callback
         
     def launch_pending_task(self) -> None:
+        """Lance la prochaine tâche GPU en attente dans la file d'attente."""
+        self._logger.info(f"DEBUG: launch_pending_task called. GPU in use: {self._gpu_in_use_by}, Queue: {self._gpu_waiting_queue}")
+        
+        if self._app_stop_event and self._app_stop_event.is_set():
+            self._logger.debug("GPU: Application en cours d'arrêt, pas de lancement de tâche en attente")
+            return
+
+        with self._gpu_lock:
+            self._logger.info(f"DEBUG: In launch_pending_task lock. GPU in use: {self._gpu_in_use_by}, Queue: {self._gpu_waiting_queue}")
+            if self._gpu_in_use_by is not None:
+                self._logger.debug(f"GPU: GPU déjà utilisé par '{self._gpu_in_use_by}', pas de lancement de tâche en attente")
+                return
+            if not self._gpu_waiting_queue:
+                self._logger.debug("GPU: File d'attente vide, pas de lancement.")
+                return
+            next_task_key = self._gpu_waiting_queue[0]
+            self._logger.info(f"GPU: Tentative de lancement de la tâche en attente '{next_task_key}'")
+
+        if hasattr(self, '_launch_pending_task_callback') and self._launch_pending_task_callback:
+            try:
+                self._logger.info(f"DEBUG: Calling _launch_pending_task_callback for {next_task_key}")
+                threading.Thread(target=self._launch_pending_task_callback, daemon=True).start()
+            except Exception as e:
+                self._logger.error(f"GPU: Erreur lors du lancement du thread pour _launch_pending_task_callback: {e}", exc_info=True)
+        else:
+            self._logger.warning("GPU: _launch_pending_task_callback non définie.")
+
+    def _launch_pending_task_callback(self):
         """
-        Déclenche la callback pour lancer une tâche en attente.
+        Callback appelée quand le GPU est libéré pour lancer la prochaine tâche en attente.
+        Cette méthode est vide par défaut et doit être remplacée par l'appelant.
         """
-        if hasattr(self, '_launch_pending_task_callback'):
-            # Lancer dans un thread séparé pour éviter des problèmes de verrouillage
-            thread = threading.Thread(
-                target=self._launch_pending_task_callback, 
-                daemon=True
-            )
-            thread.start()
+        if self._launch_pending_task_callback:
+            try:
+                self._launch_pending_task_callback()
+            except Exception as e:
+                self._logger.error(f"GPU: Erreur dans la callback de lancement de tâche: {e}", exc_info=True)
 
 # Export explicite pour éviter tout problème d'import
 __all__ = ["GPUManager", "GpuUnavailableError"]
