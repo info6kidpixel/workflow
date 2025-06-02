@@ -21,16 +21,39 @@ class ProcessManager:
         self.config = config
         self._logger = logger
         self.gpu_manager = gpu_manager
-        self.process_info = {}
-        self._init_process_info()
+        self._initialize_all_process_info()  # Renommé pour clarifier l'intention
 
-    def _init_process_info(self):
-        self.process_info = {
-            step_key: {
-                'status': 'idle', 'log': deque(maxlen=300), 'return_code': None, 'process': None,
-                'progress_current': 0, 'progress_total': 0, 'progress_text': '',
-                'start_time_epoch': None, 'duration_str': None
-            } for step_key in self.config
+    def _initialize_all_process_info(self):
+        """Initialize process information dictionary for all steps in the configuration."""
+        self.process_info = {}
+        for step_key, step_config in self.config.items():
+            info = self._create_step_info(step_key, step_config)  # Appel à la méthode renommée
+            if info:
+                self.process_info[step_key] = info
+
+    def _create_step_info(self, step_key, step_config):
+        """Crée le dictionnaire d'information initial pour une seule étape."""
+        # Utiliser 'command' ou 'cmd' selon ce qui est disponible dans la configuration
+        cmd = step_config.get('command', step_config.get('cmd'))
+        if not cmd:
+            self._logger.error(f"Configuration invalide pour {step_key}: commande manquante")
+            return None
+            
+        return {
+            'cmd': cmd,
+            'cwd': step_config.get('cwd'),
+            'status': 'idle',
+            'log': deque(maxlen=300),
+            'return_code': None,
+            'process': None,
+            'progress_current': 0,
+            'progress_total': 0,
+            'progress_text': '',
+            'start_time': None,
+            'end_time': None,
+            'duration': None,
+            'gpu_intensive': step_config.get('gpu_intensive', False),
+            'progress_patterns': step_config.get('progress_patterns', {})
         }
 
     def get_active_step_key(self, current_auto_mode_key=None):
@@ -45,6 +68,11 @@ class ProcessManager:
         return None
 
     def cancel_step(self, step_key, current_auto_mode_key=None):
+        # Vérifier d'abord si l'étape existe
+        if step_key not in self.process_info:
+            self._logger.warning(f"Tentative d'annulation d'une étape inexistante: {step_key}")
+            return False, None, f"Étape '{step_key}' non trouvée dans la configuration."
+            
         actual_step_to_terminate_key = self.get_active_step_key(current_auto_mode_key)
         if not actual_step_to_terminate_key and self.process_info[step_key]['status'] == 'pending_gpu':
             actual_step_to_terminate_key = step_key
@@ -85,20 +113,40 @@ class ProcessManager:
         }
 
     def run_process_async(self, step_key, is_auto_mode_step=False, sequence_type=None):
-        import threading, time
+        """Lance un processus de manière asynchrone"""
+        if step_key not in self.process_info:
+            self._logger.error(f"Étape inconnue: {step_key}")
+            return False
+            
         info = self.process_info[step_key]
+        
+        # Check if cmd exists in the process info
+        if 'cmd' not in info or not info['cmd']:
+            self._logger.error(f"Erreur: Commande non définie pour l'étape {step_key}")
+            info['status'] = 'failed'
+            info['log'].append(f"ERREUR: Commande non définie pour l'étape {step_key}")
+            return False
+        
+        # Reset process info
+        info['status'] = 'initiated'
+        info['log'].clear()
+        info['return_code'] = None
+        info['process'] = None
         info['progress_current'] = 0
         info['progress_total'] = 0
         info['progress_text'] = ''
-        info['start_time_epoch'] = None
-        info['duration_str'] = None
-        info['log'].clear()
-        info['status'] = 'initiated'
-        info['return_code'] = None
-        info['process'] = None
-        thread = threading.Thread(target=self._worker_run_process, args=(step_key, is_auto_mode_step, sequence_type))
-        thread.daemon = True
+        info['start_time'] = None
+        info['end_time'] = None
+        info['duration'] = None
+        
+        # Start worker thread
+        thread = threading.Thread(
+            target=self._worker_run_process,
+            args=(step_key, is_auto_mode_step, sequence_type),
+            daemon=True
+        )
         thread.start()
+        return True
 
     def process_step_output_line(self, step_key, line):
         """
@@ -164,6 +212,14 @@ class ProcessManager:
     def _worker_run_process(self, step_key, is_auto_mode_step=False, sequence_type=None):
         """Exécute un processus dans un thread séparé avec gestion du GPU si nécessaire"""
         info = self.process_info[step_key]
+        
+        # Check if cmd exists in the process info
+        if 'cmd' not in info or not info['cmd']:
+            self._logger.error(f"Erreur: Commande non définie pour l'étape {step_key}")
+            info['status'] = 'failed'
+            info['log'].append(f"ERREUR: Commande non définie pour l'étape {step_key}")
+            return
+        
         cmd = info['cmd']
         cwd = info.get('cwd', None)
         is_gpu = info.get('gpu_intensive', False)
@@ -219,6 +275,6 @@ class ProcessManager:
             self._logger.error(f"Erreur lors de l'exécution de {step_key}: {e}", exc_info=True)
             info['status'] = 'failed'
             info['log'].append(f"ERREUR: {str(e)}")
-            if 'start_time' in info:
+            if 'start_time' in info and info['start_time'] is not None:
                 info['end_time'] = time.time()
                 info['duration'] = info['end_time'] - info['start_time']
