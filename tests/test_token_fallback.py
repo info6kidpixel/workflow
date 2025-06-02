@@ -1,4 +1,3 @@
-# Test suite for token fallback logic in app_new.py
 import os
 import pytest
 from app_new import get_token_with_fallback
