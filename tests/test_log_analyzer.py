@@ -1,4 +1,3 @@
-# Test suite for log_analyzer.py
 import pytest
 from log_analyzer import parse_log_lines
 
