@@ -61,11 +61,15 @@ COMMANDS_CONFIG = {
         "specific_logs": True
     },
     "tracking": {
-        "display_name": "Tracking MediaPipe",
-        "command": [PYTHON_VENV_EXE, str(BASE_PATH_SCRIPTS / "tracking_mediapipe_v3.py"), "{input_file}"],
+        "display_name": "Tracking MediaPipe (Batch Scan)",
+        "command": [PYTHON_VENV_EXE, str(BASE_PATH_SCRIPTS / "run_parallel_video_processing_blendshapes_good.py")],
         "gpu_intensive": True,
-        "progress_regex": re.compile(r"Frame (\d+)/(\d+)"),
-        "specific_logs": True
+        "progress_patterns": {
+            "total": re.compile(r"TOTAL_TRACKING_JOBS: (\d+)"),
+            "current": re.compile(r"Lancements/Exécutions de workers réussis \(code retour 0 du worker\): (\d+)"),
+            "progress_text": re.compile(r"\[Gestionnaire\] Préparation : (.*?) \("),
+        },
+        "specific_logs": False
     },
     "analyze_audio": {
         "display_name": "Analyse Audio",
@@ -430,7 +434,7 @@ def log_client_error():
 def get_commands_config_api(): # Renommé
     try:
         # COMMANDS_CONFIG est déjà sérialisable grâce à CustomJSONEncoder pour les regex
-        # et Path si ajouté. Si ce n'est pas le case, il faut le faire ici.
+        # et Path si ajouté. Si ce n'est pas le cas, il faut le faire ici.
         return jsonify(COMMANDS_CONFIG)
     except Exception as e:
         app.logger.error(f"Error serializing COMMANDS_CONFIG for API: {e}", exc_info=True)
